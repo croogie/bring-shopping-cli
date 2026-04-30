@@ -95,7 +95,7 @@ $ npm install -g bring-shopping-cli
 $ bring COMMAND
 running command...
 $ bring (--version)
-bring-shopping-cli/0.0.0 darwin-arm64 node-v24.8.0
+bring-shopping-cli/0.1.0 darwin-arm64 node-v24.8.0
 $ bring --help [COMMAND]
 USAGE
   $ bring COMMAND
@@ -104,6 +104,7 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`bring autocomplete [SHELL]`](#bring-autocomplete-shell)
 * [`bring help [COMMAND]`](#bring-help-command)
 * [`bring lists`](#bring-lists)
 * [`bring plugins`](#bring-plugins)
@@ -116,6 +117,37 @@ USAGE
 * [`bring plugins uninstall [PLUGIN]`](#bring-plugins-uninstall-plugin)
 * [`bring plugins unlink [PLUGIN]`](#bring-plugins-unlink-plugin)
 * [`bring plugins update`](#bring-plugins-update)
+
+## `bring autocomplete [SHELL]`
+
+Display autocomplete installation instructions.
+
+```
+USAGE
+  $ bring autocomplete [SHELL] [-r]
+
+ARGUMENTS
+  [SHELL]  (zsh|bash|powershell) Shell type
+
+FLAGS
+  -r, --refresh-cache  Refresh cache (ignores displaying instructions)
+
+DESCRIPTION
+  Display autocomplete installation instructions.
+
+EXAMPLES
+  $ bring autocomplete
+
+  $ bring autocomplete bash
+
+  $ bring autocomplete zsh
+
+  $ bring autocomplete powershell
+
+  $ bring autocomplete --refresh-cache
+```
+
+_See code: [@oclif/plugin-autocomplete](https://github.com/oclif/plugin-autocomplete/blob/v3.2.46/src/commands/autocomplete/index.ts)_
 
 ## `bring help [COMMAND]`
 
@@ -169,7 +201,7 @@ EXAMPLES
   ]
 ```
 
-_See code: [src/commands/lists.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.0.0/src/commands/lists.ts)_
+_See code: [src/commands/lists.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.1.0/src/commands/lists.ts)_
 
 ## `bring plugins`
 
