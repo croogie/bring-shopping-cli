@@ -1,26 +1,101 @@
-bring-cli
-=================
+# bring-shopping-cli
 
-Bring Shopping CLI
-
+Command-line client for Bring shopping lists.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/bring-cli.svg)](https://npmjs.org/package/bring-cli)
-[![Downloads/week](https://img.shields.io/npm/dw/bring-cli.svg)](https://npmjs.org/package/bring-cli)
+[![Version](https://img.shields.io/npm/v/bring-shopping-cli.svg)](https://npmjs.org/package/bring-shopping-cli)
+[![Downloads/week](https://img.shields.io/npm/dw/bring-shopping-cli.svg)](https://npmjs.org/package/bring-shopping-cli)
 
+`bring-shopping-cli` is an oclif-based CLI for working with the Bring shopping API from a
+terminal. The current implementation can authenticate with a Bring account and
+list available shopping lists in multiple output formats.
+
+## Installation
+
+Install the package globally from npm:
+
+```sh
+npm install -g bring-shopping-cli
+```
+
+Then run:
+
+```sh
+bring --help
+```
+
+The package requires Node.js 18 or newer.
+
+## Authentication
+
+Commands that call the Bring API need your Bring account credentials. The
+recommended setup is to provide them through environment variables:
+
+```sh
+export BRING_EMAIL="user@example.com"
+export BRING_PASSWORD="your-password"
+```
+
+You can also pass credentials per command:
+
+```sh
+bring lists --email user@example.com --password your-password
+```
+
+Environment variables are the preferred option because they keep credentials out
+of command examples and make repeated usage simpler. This CLI does not currently
+store credentials or session tokens.
+
+## Implemented Commands
+
+### `bring lists`
+
+Lists the shopping lists available to the authenticated Bring account. By
+default, output is formatted as a readable text table:
+
+```sh
+bring lists
+```
+
+Use `--format` to select a machine-readable format:
+
+```sh
+bring lists --format json
+bring lists --format csv
+bring lists --format tsv
+bring lists --format text
+```
+
+Supported output fields are `name`, `listUuid`, and `theme`.
+
+### `bring help`
+
+Shows CLI help for all commands or a specific command:
+
+```sh
+bring help
+bring help lists
+```
+
+### `bring plugins`
+
+Plugin management commands are provided by `@oclif/plugin-plugins`. They are
+available because this project currently includes oclif plugin support, even
+though the main Bring functionality does not depend on user-installed plugins.
 
 <!-- toc -->
+* [bring-shopping-cli](#bring-shopping-cli)
 * [Usage](#usage)
 * [Commands](#commands)
 <!-- tocstop -->
 # Usage
 <!-- usage -->
 ```sh-session
-$ npm install -g bring-cli
+$ npm install -g bring-shopping-cli
 $ bring COMMAND
 running command...
 $ bring (--version)
-bring-cli/0.0.0 darwin-arm64 node-v24.8.0
+bring-shopping-cli/0.0.0 darwin-arm64 node-v24.8.0
 $ bring --help [COMMAND]
 USAGE
   $ bring COMMAND
@@ -29,9 +104,8 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bring hello PERSON`](#bring-hello-person)
-* [`bring hello world`](#bring-hello-world)
 * [`bring help [COMMAND]`](#bring-help-command)
+* [`bring lists`](#bring-lists)
 * [`bring plugins`](#bring-plugins)
 * [`bring plugins add PLUGIN`](#bring-plugins-add-plugin)
 * [`bring plugins:inspect PLUGIN...`](#bring-pluginsinspect-plugin)
@@ -42,48 +116,6 @@ USAGE
 * [`bring plugins uninstall [PLUGIN]`](#bring-plugins-uninstall-plugin)
 * [`bring plugins unlink [PLUGIN]`](#bring-plugins-unlink-plugin)
 * [`bring plugins update`](#bring-plugins-update)
-
-## `bring hello PERSON`
-
-Say hello
-
-```
-USAGE
-  $ bring hello PERSON -f <value>
-
-ARGUMENTS
-  PERSON  Person to say hello to
-
-FLAGS
-  -f, --from=<value>  (required) Who is saying hello
-
-DESCRIPTION
-  Say hello
-
-EXAMPLES
-  $ bring hello friend --from oclif
-  hello friend from oclif! (./src/commands/hello/index.ts)
-```
-
-_See code: [src/commands/hello/index.ts](https://github.com/croogie/bring-cli/blob/v0.0.0/src/commands/hello/index.ts)_
-
-## `bring hello world`
-
-Say hello world
-
-```
-USAGE
-  $ bring hello world
-
-DESCRIPTION
-  Say hello world
-
-EXAMPLES
-  $ bring hello world
-  hello world! (./src/commands/hello/world.ts)
-```
-
-_See code: [src/commands/hello/world.ts](https://github.com/croogie/bring-cli/blob/v0.0.0/src/commands/hello/world.ts)_
 
 ## `bring help [COMMAND]`
 
@@ -104,6 +136,40 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.45/src/commands/help.ts)_
+
+## `bring lists`
+
+List Bring shopping lists
+
+```
+USAGE
+  $ bring lists [--email <value>] [--format text|tsv|csv|json] [--password <value>]
+
+FLAGS
+  --email=<value>     Bring account email. Defaults to BRING_EMAIL.
+  --format=<option>   [default: text] Output format.
+                      <options: text|tsv|csv|json>
+  --password=<value>  Bring account password. Defaults to BRING_PASSWORD.
+
+DESCRIPTION
+  List Bring shopping lists
+
+EXAMPLES
+  $ bring lists
+  Name       UUID    Theme
+  Groceries  list-1  ch.publisheria.bring.theme.home
+
+  $ bring lists --format json
+  [
+    {
+      "listUuid": "list-1",
+      "name": "Groceries",
+      "theme": "ch.publisheria.bring.theme.home"
+    }
+  ]
+```
+
+_See code: [src/commands/lists.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.0.0/src/commands/lists.ts)_
 
 ## `bring plugins`
 

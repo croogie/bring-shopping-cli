@@ -2,7 +2,7 @@
 
 ## Project Structure & Module Organization
 
-This repository contains an oclif-based TypeScript CLI named `bring-cli`.
+This repository contains an oclif-based TypeScript CLI named `bring-shopping-cli`.
 Source code lives in `src/`, with command implementations under
 `src/commands/` (for example, `src/commands/hello/world.ts`). Tests mirror the
 source layout under `test/`, using `*.test.ts` files. Runtime entrypoints are in
@@ -29,6 +29,13 @@ for `bring hello PERSON` and `src/commands/hello/world.ts` for
 Formatting is governed by `@oclif/prettier-config`; linting is configured in
 `eslint.config.mjs`. Prefer clear command names, explicit flags, and concise
 help text because README command documentation is generated from oclif metadata.
+
+## User-Facing Language
+
+All user-facing text stored in this repository or printed by the CLI must be in
+English. This includes command descriptions, help text, errors, README content,
+and test expectations. Do not translate product names or other data returned by
+the Bring API.
 
 ## Testing Guidelines
 
