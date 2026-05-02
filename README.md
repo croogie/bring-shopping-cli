@@ -6,9 +6,9 @@ Command-line client for Bring shopping lists.
 [![Version](https://img.shields.io/npm/v/bring-shopping-cli.svg)](https://npmjs.org/package/bring-shopping-cli)
 [![Downloads/week](https://img.shields.io/npm/dw/bring-shopping-cli.svg)](https://npmjs.org/package/bring-shopping-cli)
 
-`bring-shopping-cli` is an oclif-based CLI for reading Bring shopping lists from a terminal.
-It authenticates with a Bring account, lists available shopping lists, and prints shopping list
-items in text or machine-readable formats.
+`bring-shopping-cli` is an oclif-based CLI for reading and updating Bring shopping lists from a
+terminal. It authenticates with a Bring account, lists available shopping lists, and prints or adds
+shopping list items in text or machine-readable formats.
 
 ## Requirements
 
@@ -90,8 +90,8 @@ List output fields are `name`, `listUuid`, and `theme`.
 
 ### `bring items LIST`
 
-Prints items for one Bring shopping list. `LIST` can be either a list UUID or an exact list name.
-If multiple lists share the same name, pass the UUID.
+Prints items for one Bring shopping list. `LIST` can be either a list UUID or a case-insensitive
+exact list name. If multiple lists share the same name, pass the UUID.
 
 ```sh
 bring items list-1
@@ -138,9 +138,47 @@ Translated item output includes `originalName` when Bring returns a translated n
 
 Item output fields are `section`, `name`, `originalName`, and `specification`.
 
+### `bring items add LIST NAME`
+
+Adds or updates one item in a Bring shopping list. `LIST` can be either a list UUID or an exact list
+name. By default, `NAME` is matched case-insensitively against Bring translations for the current
+system locale. When a translated value matches, the source item name is saved with the casing
+returned by Bring. If no translation exists, the raw name is saved with the casing passed on the
+command line.
+
+```sh
+bring items add list-1 mleko
+bring items add groceries mleko --spec "2 liters"
+```
+
+Default text output:
+
+```text
+Added mleko to Groceries (list-1); saved as: Milk; specification: 2 liters
+```
+
+Supported flags:
+
+- `--email <value>`: Bring account email. Defaults to `BRING_EMAIL`.
+- `--password <value>`: Bring account password. Defaults to `BRING_PASSWORD`.
+- `--format text|json|csv|tsv`: Output format. Defaults to `text`.
+- `--locale <value>`: Translation locale. Defaults to the current system locale.
+- `--no-translate`: Save the raw item name without loading translations.
+- `--spec <value>`: Item specification.
+
+Examples:
+
+```sh
+bring items add groceries mleko --locale pl-PL
+bring items add list-1 Bread --no-translate
+bring items add Groceries Mleko --spec "2 liters" --format json
+```
+
+Added item output fields are `listUuid`, `listName`, `name`, `originalName`, and `specification`.
+
 ## Output Formats
 
-Both implemented Bring commands support the same output formats:
+Bring commands that print structured data support the same output formats:
 
 - `text`: readable table output for terminal usage
 - `json`: pretty-printed JSON
@@ -155,6 +193,7 @@ Use the built-in help command to inspect command usage:
 bring help
 bring help lists
 bring help items
+bring help items add
 ```
 
 oclif also provides framework-level commands such as autocomplete and plugin management. They are

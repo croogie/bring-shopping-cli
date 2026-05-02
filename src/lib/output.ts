@@ -1,7 +1,8 @@
-import type {BringList, ItemRow, OutputFormat} from './types.js'
+import type {AddedItemRow, BringList, ItemRow, OutputFormat} from './types.js'
 
 const columns: Array<keyof BringList> = ['name', 'listUuid', 'theme']
 const itemColumns: Array<keyof ItemRow> = ['section', 'name', 'originalName', 'specification']
+const addedItemColumns: Array<keyof AddedItemRow> = ['listUuid', 'listName', 'name', 'originalName', 'specification']
 
 function stringify(value: string | undefined): string {
   return value ?? ''
@@ -66,6 +67,21 @@ function renderItemsText(items: ItemRow[]): string {
     .join('\n')
 }
 
+function renderAddedItemText(item: AddedItemRow): string {
+  const displayName = item.originalName ?? item.name
+  const parts = [`Added ${displayName} to ${item.listName} (${item.listUuid})`]
+
+  if (item.originalName) {
+    parts.push(`saved as: ${item.name}`)
+  }
+
+  if (item.specification) {
+    parts.push(`specification: ${item.specification}`)
+  }
+
+  return [parts[0], ...parts.slice(1)].join('; ')
+}
+
 export function renderLists(lists: BringList[], format: OutputFormat): string {
   switch (format) {
     case 'csv': {
@@ -102,6 +118,26 @@ export function renderItems(items: ItemRow[], format: OutputFormat): string {
 
     case 'tsv': {
       return renderDelimitedRows(items, itemColumns, '\t')
+    }
+  }
+}
+
+export function renderAddedItem(item: AddedItemRow, format: OutputFormat): string {
+  switch (format) {
+    case 'csv': {
+      return renderDelimitedRows([item], addedItemColumns, ',')
+    }
+
+    case 'json': {
+      return JSON.stringify(item, null, 2)
+    }
+
+    case 'text': {
+      return renderAddedItemText(item)
+    }
+
+    case 'tsv': {
+      return renderDelimitedRows([item], addedItemColumns, '\t')
     }
   }
 }
