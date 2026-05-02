@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/croogie/bring-shopping-cli/compare/v1.0.0...v1.0.1) (2026-05-02)
+
+### Bug Fixes
+
+- build warnings ([#2](https://github.com/croogie/bring-shopping-cli/issues/2)) ([bb5dddf](https://github.com/croogie/bring-shopping-cli/commit/bb5dddff1ea9ff903b6f4212461aad19cc4a28d1))
+
 ## 1.0.0 (2026-05-02)
 
 ### Features
