@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "Michał Świtoń",
   "bin": {
-    "bring": "./bin/run.js"
+    "bring": "bin/run.js"
   },
   "bugs": "https://github.com/croogie/bring-shopping-cli/issues",
   "dependencies": {
@@ -42,6 +42,7 @@
     "semantic-release": "^25.0.3",
     "shx": "^0.3.3",
     "ts-node": "^10",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   },
   "engines": {
@@ -59,6 +60,13 @@
   "license": "MIT",
   "main": "dist/index.js",
   "packageManager": "pnpm@10.17.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "unrs-resolver",
+      "yarn"
+    ]
+  },
   "type": "module",
   "oclif": {
     "bin": "bring",
@@ -71,7 +79,10 @@
     ],
     "topicSeparator": " "
   },
-  "repository": "croogie/bring-shopping-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/croogie/bring-shopping-cli.git"
+  },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "format": "prettier --write .",
