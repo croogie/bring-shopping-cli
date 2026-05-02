@@ -3,6 +3,7 @@
 **/.DS_Store
 /.idea
 /dist
+/.pnpm-store
 /tmp
 /node_modules
 oclif.manifest.json
@@ -10,5 +11,3 @@ oclif.manifest.json
 
 yarn.lock
 package-lock.json
-
-
