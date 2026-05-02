@@ -1,12 +1,4 @@
-export interface BringCredentials {
-  email: string
-  password: string
-}
-
-export interface CredentialFlags {
-  email?: string
-  password?: string
-}
+import type {BringCredentials, CredentialFlags} from './types.js'
 
 export function resolveCredentials(flags: CredentialFlags, env: NodeJS.ProcessEnv = process.env): BringCredentials {
   const email = flags.email ?? env.BRING_EMAIL

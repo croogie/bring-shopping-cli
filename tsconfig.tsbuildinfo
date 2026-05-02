@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/commands/lists.ts","./src/lib/client.ts","./src/lib/config.ts","./src/lib/output.ts"],"version":"5.9.3"}
+{"root":["./src/index.ts","./src/commands/items.ts","./src/commands/lists.ts","./src/lib/client.ts","./src/lib/config.ts","./src/lib/output.ts","./src/lib/types.ts","./src/lib/utils.ts"],"version":"5.9.3"}

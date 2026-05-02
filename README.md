@@ -106,6 +106,7 @@ USAGE
 <!-- commands -->
 * [`bring autocomplete [SHELL]`](#bring-autocomplete-shell)
 * [`bring help [COMMAND]`](#bring-help-command)
+* [`bring items LIST`](#bring-items-list)
 * [`bring lists`](#bring-lists)
 * [`bring plugins`](#bring-plugins)
 * [`bring plugins add PLUGIN`](#bring-plugins-add-plugin)
@@ -168,6 +169,49 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/6.2.45/src/commands/help.ts)_
+
+## `bring items LIST`
+
+List Bring shopping list items
+
+```
+USAGE
+  $ bring items LIST [--email <value>] [--format text|tsv|csv|json] [--locale <value>] [--no-translate]
+    [--password <value>] [--section all|purchase|recently]
+
+ARGUMENTS
+  LIST  Bring list UUID or exact list name.
+
+FLAGS
+  --email=<value>     Bring account email. Defaults to BRING_EMAIL.
+  --format=<option>   [default: text] Output format.
+                      <options: text|tsv|csv|json>
+  --locale=<value>    Translation locale. Defaults to the current system locale.
+  --no-translate      Print raw Bring item names without loading translations.
+  --password=<value>  Bring account password. Defaults to BRING_PASSWORD.
+  --section=<option>  [default: all] Item section to print.
+                      <options: all|purchase|recently>
+
+DESCRIPTION
+  List Bring shopping list items
+
+EXAMPLES
+  $ bring items list-1
+  Section   Name   Specification
+  purchase  Milk   2 liters
+
+  $ bring items Groceries --locale de-DE --format json
+  [
+    {
+      "section": "purchase",
+      "name": "Milch",
+      "originalName": "Milk",
+      "specification": "2 liters"
+    }
+  ]
+```
+
+_See code: [src/commands/items.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.1.0/src/commands/items.ts)_
 
 ## `bring lists`
 

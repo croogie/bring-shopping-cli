@@ -1,17 +1,6 @@
 import {createRequire} from 'node:module'
 
-import type {BringCredentials} from './config.js'
-
-export interface BringList {
-  listUuid: string
-  name: string
-  theme: string
-}
-
-export interface BringClient {
-  loadLists(): Promise<{lists: BringList[]}>
-  login(): Promise<void>
-}
+import type {BringClient, BringCredentials} from './types.js'
 
 type BringConstructor = new (options: {mail: string; password: string}) => BringClient
 

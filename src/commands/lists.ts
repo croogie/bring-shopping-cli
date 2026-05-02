@@ -1,8 +1,10 @@
 import {Command, Flags} from '@oclif/core'
 
+import type {OutputFormat} from '../lib/types.js'
+
 import {createAuthenticatedClient} from '../lib/client.js'
 import {resolveCredentials} from '../lib/config.js'
-import {type OutputFormat, renderLists} from '../lib/output.js'
+import {renderLists} from '../lib/output.js'
 
 export default class Lists extends Command {
   static description = 'List Bring shopping lists'
