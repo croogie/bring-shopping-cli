@@ -99,7 +99,7 @@ $ npm install -g bring-shopping-cli
 $ bring COMMAND
 running command...
 $ bring (--version)
-bring-shopping-cli/0.1.0 darwin-arm64 node-v24.8.0
+bring-shopping-cli/0.2.0 darwin-arm64 node-v24.8.0
 $ bring --help [COMMAND]
 USAGE
   $ bring COMMAND
@@ -219,7 +219,7 @@ EXAMPLES
   ]
 ```
 
-_See code: [src/commands/items.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.1.0/src/commands/items.ts)_
+_See code: [src/commands/items.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.2.0/src/commands/items.ts)_
 
 ## `bring lists`
 
@@ -253,7 +253,7 @@ EXAMPLES
   ]
 ```
 
-_See code: [src/commands/lists.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.1.0/src/commands/lists.ts)_
+_See code: [src/commands/lists.ts](https://github.com/croogie/bring-shopping-cli/blob/v0.2.0/src/commands/lists.ts)_
 
 ## `bring plugins`
 
