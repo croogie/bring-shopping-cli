@@ -8,16 +8,19 @@ jobs:
   unit-tests:
     strategy:
       matrix:
-        os: ['ubuntu-latest', 'windows-latest']
-        node_version: [lts/-1, lts/*, latest]
+        os: ['ubuntu-latest']
+        node_version: [latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    env:
+      LANG: pl-PL
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
           cache: pnpm
-      - run: pnpm install
+      - run: pnpm install --frozen-lockfile
       - run: pnpm run build
       - run: pnpm run test

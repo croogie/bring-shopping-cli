@@ -29,6 +29,7 @@ export interface BringClient {
   loadLists(): Promise<{lists: BringList[]}>
   loadTranslations(locale: string): Promise<Record<string, string>>
   login(): Promise<void>
+  saveItem(listUuid: string, itemName: string, specification: string): Promise<string>
 }
 
 export type OutputFormat = 'csv' | 'json' | 'text' | 'tsv'
@@ -41,3 +42,11 @@ export interface ItemRow {
 }
 
 export type ItemSection = 'all' | 'purchase' | 'recently'
+
+export interface AddedItemRow {
+  listName: string
+  listUuid: string
+  name: string
+  originalName?: string
+  specification: string
+}

@@ -15,13 +15,22 @@
     "bring-shopping": "^2.0.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
     "@eslint/compat": "^1",
     "@oclif/prettier-config": "^0.2.1",
     "@oclif/test": "^4",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/release-notes-generator": "^14.1.0",
     "@types/chai": "^4",
     "@types/mocha": "^10",
     "@types/node": "^18",
     "chai": "^4",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
@@ -30,6 +39,7 @@
     "mocha": "^11",
     "oclif": "^4",
     "prettier": "^3.8.3",
+    "semantic-release": "^25.0.3",
     "shx": "^0.3.3",
     "ts-node": "^10",
     "typescript": "^5"
@@ -48,6 +58,7 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
+  "packageManager": "pnpm@10.17.1",
   "type": "module",
   "oclif": {
     "bin": "bring",
@@ -69,9 +80,9 @@
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "pnpm run lint",
     "prepare": "husky",
-    "prepack": "oclif manifest && oclif readme",
-    "test": "mocha --forbid-only \"test/**/*.test.ts\"",
-    "version": "oclif readme && git add README.md"
+    "prepack": "oclif manifest",
+    "release:dry": "semantic-release --dry-run",
+    "test": "mocha --forbid-only \"test/**/*.test.ts\""
   },
   "lint-staged": {
     "*.{ts,js,mjs,cjs,json,md,yml,yaml}": "prettier --write"

@@ -10,20 +10,10 @@ const lists = [
   {listUuid: 'list-3', name: 'Hardware', theme: 'custom'},
 ]
 
-const items = {
-  purchase: [
-    {name: 'Milk', specification: '2 liters'},
-    {name: 'Bread', specification: ''},
-  ],
-  recently: [{name: 'Eggs', specification: '10'}],
-  status: 'shared',
-  uuid: 'list-1',
-}
-
 function response(payload: unknown) {
   return {
     json: async () => payload,
-    text: async () => JSON.stringify(payload),
+    text: async () => (typeof payload === 'string' ? payload : JSON.stringify(payload)),
   }
 }
 
@@ -36,13 +26,13 @@ function stubDefaultLocale(locale: string) {
 function stubBringApi(
   options: {responseLists?: typeof lists; translations?: Record<string, string> | {error: true; message: string}} = {},
 ) {
-  const calls: Array<{body?: unknown; url: string}> = []
+  const calls: Array<{body?: unknown; method?: string; url: string}> = []
   const responseLists = options.responseLists ?? lists
   const translations = options.translations ?? {Milk: 'Mleko'}
 
-  Reflect.set(globalThis, 'fetch', async (input: unknown, init?: {body?: unknown}) => {
+  Reflect.set(globalThis, 'fetch', async (input: unknown, init?: {body?: unknown; method?: string}) => {
     const url = String(input)
-    calls.push({body: init?.body, url})
+    calls.push({body: init?.body, method: init?.method, url})
 
     if (url.endsWith('/bringauth')) {
       return response(
@@ -59,8 +49,8 @@ function stubBringApi(
       return response({lists: responseLists})
     }
 
-    if (url.endsWith('/bringlists/list-1')) {
-      return response(items)
+    if (url.endsWith('/bringlists/list-1') && init?.method === 'PUT') {
+      return response('')
     }
 
     if (url === 'https://web.getbring.com/locale/articles.pl-PL.json') {
@@ -77,7 +67,7 @@ function stubBringApi(
   return calls
 }
 
-describe('items', () => {
+describe('items add', () => {
   afterEach(() => {
     Reflect.set(globalThis, 'fetch', originalFetch)
     Reflect.set(Intl, 'DateTimeFormat', originalDateTimeFormat)
@@ -85,37 +75,31 @@ describe('items', () => {
     delete process.env.BRING_PASSWORD
   })
 
-  it('prints all items as text with translated names by default', async () => {
+  it('adds a reverse-translated item by list uuid', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
     stubDefaultLocale('pl_PL.UTF-8')
-    stubBringApi()
+    const calls = stubBringApi()
 
-    const {error, stdout} = await runCommand(['items', 'list-1'])
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'mleko'])
 
     expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Section')
-    expect(stdout).to.contain('Name')
-    expect(stdout).to.contain('Original')
-    expect(stdout).to.contain('Specification')
-    expect(stdout).to.contain('purchase')
-    expect(stdout).to.contain('Mleko')
-    expect(stdout).to.contain('Milk')
-    expect(stdout).to.contain('recently')
-    expect(stdout).to.contain('Eggs')
+    expect(stdout).to.equal('Added mleko to Groceries (list-1); saved as: Milk\n')
+    const putCall = calls.find((call) => call.method === 'PUT')
+    expect(putCall?.body).to.equal('&purchase=Milk&recently=&specification=&remove=&sender=null')
+    expect(putCall?.url).to.equal('https://api.getbring.com/rest/v2/bringlists/list-1')
   })
 
-  it('matches translation source names case-insensitively', async () => {
+  it('adds an item resolved by case-insensitive list name with a specification', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
-    stubDefaultLocale('pl_PL.UTF-8')
-    stubBringApi({translations: {milk: 'Mleko'}})
+    stubDefaultLocale('pl-PL')
+    stubBringApi({responseLists: [lists[0], lists[2]]})
 
-    const {error, stdout} = await runCommand(['items', 'list-1'])
+    const {error, stdout} = await runCommand('items add groceries Bread --spec "2 loaves"')
 
     expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Mleko')
-    expect(stdout).to.contain('Milk')
+    expect(stdout).to.equal('Added Bread to Groceries (list-1); specification: 2 loaves\n')
   })
 
   it('passes explicit locale to loadTranslations', async () => {
@@ -123,11 +107,41 @@ describe('items', () => {
     process.env.BRING_PASSWORD = 'env-secret'
     const calls = stubBringApi()
 
-    const {error, stdout} = await runCommand(['items', 'list-1', '--locale', 'de-DE'])
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Milch', '--locale', 'de-DE'])
 
     expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Milch')
+    expect(stdout).to.contain('Added Milch')
+    expect(stdout).to.contain('saved as: Milk')
     expect(calls.map((call) => call.url)).to.include('https://web.getbring.com/locale/articles.de-DE.json')
+  })
+
+  it('falls back to raw name when no translation exists', async () => {
+    process.env.BRING_EMAIL = 'env@example.com'
+    process.env.BRING_PASSWORD = 'env-secret'
+    stubDefaultLocale('pl-PL')
+    stubBringApi({translations: {Milk: 'Mleko'}})
+
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Bread'])
+
+    expect(error).to.equal(undefined)
+    expect(stdout).to.equal('Added Bread to Groceries (list-1)\n')
+  })
+
+  it('omits originalName when translation matches the raw name', async () => {
+    process.env.BRING_EMAIL = 'env@example.com'
+    process.env.BRING_PASSWORD = 'env-secret'
+    stubDefaultLocale('pl-PL')
+    stubBringApi({translations: {Milk: 'Milk'}})
+
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Milk', '--format', 'json'])
+
+    expect(error).to.equal(undefined)
+    expect(JSON.parse(stdout)).to.deep.equal({
+      listName: 'Groceries',
+      listUuid: 'list-1',
+      name: 'Milk',
+      specification: '',
+    })
   })
 
   it('skips translations when --no-translate is passed', async () => {
@@ -135,102 +149,59 @@ describe('items', () => {
     process.env.BRING_PASSWORD = 'env-secret'
     const calls = stubBringApi()
 
-    const {error, stdout} = await runCommand(['items', 'list-1', '--no-translate'])
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Milk', '--no-translate'])
 
     expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Milk')
-    expect(stdout).not.to.contain('Mleko')
-    expect(stdout).not.to.contain('Original')
+    expect(stdout).to.equal('Added Milk to Groceries (list-1)\n')
     expect(calls.some((call) => call.url.includes('/locale/articles.'))).to.equal(false)
   })
 
-  it('prints items as json', async () => {
+  it('prints json output', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
     stubDefaultLocale('pl-PL')
     stubBringApi()
 
-    const {error, stdout} = await runCommand(['items', 'list-1', '--format', 'json'])
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Mleko', '--format', 'json'])
 
     expect(error).to.equal(undefined)
-    expect(JSON.parse(stdout)).to.deep.equal([
-      {name: 'Mleko', originalName: 'Milk', section: 'purchase', specification: '2 liters'},
-      {name: 'Bread', section: 'purchase', specification: ''},
-      {name: 'Eggs', section: 'recently', specification: '10'},
-    ])
+    expect(JSON.parse(stdout)).to.deep.equal({
+      listName: 'Groceries',
+      listUuid: 'list-1',
+      name: 'Milk',
+      originalName: 'Mleko',
+      specification: '',
+    })
   })
 
-  it('prints items as csv', async () => {
+  it('prints csv output', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
     stubDefaultLocale('pl-PL')
     stubBringApi()
 
-    const {error, stdout} = await runCommand(['items', 'list-1', '--format', 'csv'])
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Mleko', '--format', 'csv'])
 
     expect(error).to.equal(undefined)
-    expect(stdout).to.equal(
-      'section,name,originalName,specification\npurchase,Mleko,Milk,2 liters\npurchase,Bread,,\nrecently,Eggs,,10\n',
-    )
+    expect(stdout).to.equal('listUuid,listName,name,originalName,specification\nlist-1,Groceries,Milk,Mleko,\n')
   })
 
-  it('prints items as tsv', async () => {
+  it('prints tsv output', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
     stubDefaultLocale('pl-PL')
     stubBringApi()
 
-    const {error, stdout} = await runCommand(['items', 'list-1', '--format', 'tsv'])
+    const {error, stdout} = await runCommand(['items add', 'list-1', 'Mleko', '--format', 'tsv'])
 
     expect(error).to.equal(undefined)
-    expect(stdout).to.equal(
-      'section\tname\toriginalName\tspecification\npurchase\tMleko\tMilk\t2 liters\npurchase\tBread\t\t\nrecently\tEggs\t\t10\n',
-    )
-  })
-
-  it('filters purchase items', async () => {
-    process.env.BRING_EMAIL = 'env@example.com'
-    process.env.BRING_PASSWORD = 'env-secret'
-    stubBringApi()
-
-    const {error, stdout} = await runCommand(['items', 'list-1', '--section', 'purchase', '--no-translate'])
-
-    expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Milk')
-    expect(stdout).not.to.contain('Eggs')
-    expect(stdout).not.to.contain('recently')
-  })
-
-  it('filters recently items', async () => {
-    process.env.BRING_EMAIL = 'env@example.com'
-    process.env.BRING_PASSWORD = 'env-secret'
-    stubBringApi()
-
-    const {error, stdout} = await runCommand(['items', 'list-1', '--section', 'recently', '--no-translate'])
-
-    expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Eggs')
-    expect(stdout).not.to.contain('Milk')
-    expect(stdout).not.to.contain('purchase')
-  })
-
-  it('resolves list by case-insensitive exact name', async () => {
-    process.env.BRING_EMAIL = 'env@example.com'
-    process.env.BRING_PASSWORD = 'env-secret'
-    stubBringApi({responseLists: [lists[0], lists[2]]})
-
-    const {error, stdout} = await runCommand(['items', 'groceries', '--no-translate'])
-
-    expect(error).to.equal(undefined)
-    expect(stdout).to.contain('Milk')
+    expect(stdout).to.equal('listUuid\tlistName\tname\toriginalName\tspecification\nlist-1\tGroceries\tMilk\tMleko\t\n')
   })
 
   it('fails when credentials are missing', async () => {
-    const {error} = await runCommand(['items', 'list-1'])
+    const {error} = await runCommand(['items add', 'list-1', 'Milk'])
 
     expect(error?.message).to.contain('Missing Bring credentials')
-    expect(error?.message).to.contain('BRING_EMAIL')
-    expect(error?.message).to.contain('BRING_PASSWORD')
   })
 
   it('fails for unknown lists', async () => {
@@ -238,7 +209,7 @@ describe('items', () => {
     process.env.BRING_PASSWORD = 'env-secret'
     stubBringApi()
 
-    const {error} = await runCommand(['items', 'Missing', '--no-translate'])
+    const {error} = await runCommand(['items add', 'Missing', 'Milk', '--no-translate'])
 
     expect(error?.message).to.equal('Cannot find Bring list "Missing". Pass a list UUID or exact list name.')
   })
@@ -248,7 +219,7 @@ describe('items', () => {
     process.env.BRING_PASSWORD = 'env-secret'
     stubBringApi()
 
-    const {error} = await runCommand(['items', 'Groceries', '--no-translate'])
+    const {error} = await runCommand(['items add', 'Groceries', 'Milk', '--no-translate'])
 
     expect(error?.message).to.equal('Bring list name "Groceries" matches multiple lists. Pass the list UUID instead.')
   })
@@ -259,7 +230,7 @@ describe('items', () => {
     stubDefaultLocale('pl-PL')
     stubBringApi({translations: {error: true, message: 'missing locale'}})
 
-    const {error} = await runCommand(['items', 'list-1'])
+    const {error} = await runCommand(['items add', 'list-1', 'Milk'])
 
     expect(error?.message).to.contain('Cannot load Bring translations for locale pl-PL')
     expect(error?.message).to.contain('--locale')
