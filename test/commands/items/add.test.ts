@@ -93,6 +93,7 @@ describe('items add', () => {
   it('adds an item resolved by case-insensitive list name with a specification', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
+    stubDefaultLocale('pl-PL')
     stubBringApi({responseLists: [lists[0], lists[2]]})
 
     const {error, stdout} = await runCommand('items add groceries Bread --spec "2 loaves"')
@@ -117,6 +118,7 @@ describe('items add', () => {
   it('falls back to raw name when no translation exists', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
+    stubDefaultLocale('pl-PL')
     stubBringApi({translations: {Milk: 'Mleko'}})
 
     const {error, stdout} = await runCommand(['items add', 'list-1', 'Bread'])
@@ -128,6 +130,7 @@ describe('items add', () => {
   it('omits originalName when translation matches the raw name', async () => {
     process.env.BRING_EMAIL = 'env@example.com'
     process.env.BRING_PASSWORD = 'env-secret'
+    stubDefaultLocale('pl-PL')
     stubBringApi({translations: {Milk: 'Milk'}})
 
     const {error, stdout} = await runCommand(['items add', 'list-1', 'Milk', '--format', 'json'])

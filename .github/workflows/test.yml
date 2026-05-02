@@ -12,6 +12,8 @@ jobs:
         node_version: [lts/*, latest]
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    env:
+      LANG: pl-PL
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
