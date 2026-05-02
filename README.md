@@ -84,12 +84,16 @@ available because this project currently includes oclif plugin support, even
 though the main Bring functionality does not depend on user-installed plugins.
 
 <!-- toc -->
-* [bring-shopping-cli](#bring-shopping-cli)
-* [Usage](#usage)
-* [Commands](#commands)
+
+- [bring-shopping-cli](#bring-shopping-cli)
+- [Usage](#usage)
+- [Commands](#commands)
 <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g bring-shopping-cli
 $ bring COMMAND
@@ -101,23 +105,27 @@ USAGE
   $ bring COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`bring autocomplete [SHELL]`](#bring-autocomplete-shell)
-* [`bring help [COMMAND]`](#bring-help-command)
-* [`bring items LIST`](#bring-items-list)
-* [`bring lists`](#bring-lists)
-* [`bring plugins`](#bring-plugins)
-* [`bring plugins add PLUGIN`](#bring-plugins-add-plugin)
-* [`bring plugins:inspect PLUGIN...`](#bring-pluginsinspect-plugin)
-* [`bring plugins install PLUGIN`](#bring-plugins-install-plugin)
-* [`bring plugins link PATH`](#bring-plugins-link-path)
-* [`bring plugins remove [PLUGIN]`](#bring-plugins-remove-plugin)
-* [`bring plugins reset`](#bring-plugins-reset)
-* [`bring plugins uninstall [PLUGIN]`](#bring-plugins-uninstall-plugin)
-* [`bring plugins unlink [PLUGIN]`](#bring-plugins-unlink-plugin)
-* [`bring plugins update`](#bring-plugins-update)
+
+- [`bring autocomplete [SHELL]`](#bring-autocomplete-shell)
+- [`bring help [COMMAND]`](#bring-help-command)
+- [`bring items LIST`](#bring-items-list)
+- [`bring lists`](#bring-lists)
+- [`bring plugins`](#bring-plugins)
+- [`bring plugins add PLUGIN`](#bring-plugins-add-plugin)
+- [`bring plugins:inspect PLUGIN...`](#bring-pluginsinspect-plugin)
+- [`bring plugins install PLUGIN`](#bring-plugins-install-plugin)
+- [`bring plugins link PATH`](#bring-plugins-link-path)
+- [`bring plugins remove [PLUGIN]`](#bring-plugins-remove-plugin)
+- [`bring plugins reset`](#bring-plugins-reset)
+- [`bring plugins uninstall [PLUGIN]`](#bring-plugins-uninstall-plugin)
+- [`bring plugins unlink [PLUGIN]`](#bring-plugins-unlink-plugin)
+- [`bring plugins update`](#bring-plugins-update)
 
 ## `bring autocomplete [SHELL]`
 
@@ -536,4 +544,5 @@ DESCRIPTION
 ```
 
 _See code: [@oclif/plugin-plugins](https://github.com/oclif/plugin-plugins/blob/5.4.62/src/commands/plugins/update.ts)_
+
 <!-- commandsstop -->

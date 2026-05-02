@@ -23,12 +23,14 @@ function stubBringApi(responseLists = lists) {
     calls.push({body: init?.body, url})
 
     if (url.endsWith('/bringauth')) {
-      return response({
-        'access_token': 'access-token',
-        name: 'Bring User',
-        'refresh_token': 'refresh-token',
-        uuid: 'user-uuid',
-      })
+      return response(
+        Object.fromEntries([
+          ['access_token', 'access-token'],
+          ['name', 'Bring User'],
+          ['refresh_token', 'refresh-token'],
+          ['uuid', 'user-uuid'],
+        ]),
+      )
     }
 
     if (url.endsWith('/bringusers/user-uuid/lists')) {

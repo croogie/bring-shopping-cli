@@ -1,0 +1,8 @@
+*-debug.log
+*-error.log
+dist
+node_modules
+tmp
+oclif.manifest.json
+yarn.lock
+package-lock.json

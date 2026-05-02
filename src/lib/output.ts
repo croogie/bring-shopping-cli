@@ -13,11 +13,7 @@ function escapeCsv(value: string): string {
   return `"${value.replaceAll('"', '""')}"`
 }
 
-function renderDelimitedRows<T extends object>(
-  rows: T[],
-  rowColumns: Array<keyof T>,
-  delimiter: ',' | '\t',
-): string {
+function renderDelimitedRows<T extends object>(rows: T[], rowColumns: Array<keyof T>, delimiter: ',' | '\t'): string {
   const escape = delimiter === ',' ? escapeCsv : stringify
   const header = rowColumns.join(delimiter)
   const renderedRows = rows.map((row) =>
@@ -38,7 +34,14 @@ function renderText(lists: BringList[]): string {
   ]
   const widths = rows[0].map((_, index) => Math.max(...rows.map((row) => row[index].length)))
 
-  return rows.map((row) => row.map((cell, index) => cell.padEnd(widths[index])).join('  ').trimEnd()).join('\n')
+  return rows
+    .map((row) =>
+      row
+        .map((cell, index) => cell.padEnd(widths[index]))
+        .join('  ')
+        .trimEnd(),
+    )
+    .join('\n')
 }
 
 function renderItemsText(items: ItemRow[]): string {
@@ -53,7 +56,14 @@ function renderItemsText(items: ItemRow[]): string {
   ]
   const widths = rows[0].map((_, index) => Math.max(...rows.map((row) => row[index].length)))
 
-  return rows.map((row) => row.map((cell, index) => cell.padEnd(widths[index])).join('  ').trimEnd()).join('\n')
+  return rows
+    .map((row) =>
+      row
+        .map((cell, index) => cell.padEnd(widths[index]))
+        .join('  ')
+        .trimEnd(),
+    )
+    .join('\n')
 }
 
 export function renderLists(lists: BringList[], format: OutputFormat): string {

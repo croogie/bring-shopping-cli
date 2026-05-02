@@ -25,8 +25,11 @@
     "eslint": "^9",
     "eslint-config-oclif": "^6",
     "eslint-config-prettier": "^10",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "mocha": "^11",
     "oclif": "^4",
+    "prettier": "^3.8.3",
     "shx": "^0.3.3",
     "ts-node": "^10",
     "typescript": "^5"
@@ -60,12 +63,18 @@
   "repository": "croogie/bring-shopping-cli",
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint": "eslint",
     "postpack": "shx rm -f oclif.manifest.json",
     "posttest": "pnpm run lint",
+    "prepare": "husky",
     "prepack": "oclif manifest && oclif readme",
     "test": "mocha --forbid-only \"test/**/*.test.ts\"",
     "version": "oclif readme && git add README.md"
+  },
+  "lint-staged": {
+    "*.{ts,js,mjs,cjs,json,md,yml,yaml}": "prettier --write"
   },
   "types": "dist/index.d.ts"
 }
