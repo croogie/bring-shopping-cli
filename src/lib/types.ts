@@ -29,6 +29,7 @@ export interface BringClient {
   loadLists(): Promise<{lists: BringList[]}>
   loadTranslations(locale: string): Promise<Record<string, string>>
   login(): Promise<void>
+  moveToRecentList(listUuid: string, itemName: string): Promise<string>
   saveItem(listUuid: string, itemName: string, specification: string): Promise<string>
 }
 
@@ -49,4 +50,11 @@ export interface AddedItemRow {
   name: string
   originalName?: string
   specification: string
+}
+
+export interface DoneItemRow {
+  listName: string
+  listUuid: string
+  name: string
+  originalName?: string
 }
