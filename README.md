@@ -7,8 +7,8 @@ Command-line client for Bring shopping lists.
 [![Downloads/week](https://img.shields.io/npm/dw/bring-shopping-cli.svg)](https://npmjs.org/package/bring-shopping-cli)
 
 `bring-shopping-cli` is an oclif-based CLI for reading and updating Bring shopping lists from a
-terminal. It authenticates with a Bring account, lists available shopping lists, and prints or adds
-shopping list items in text or machine-readable formats.
+terminal. It authenticates with a Bring account, lists available shopping lists, and prints, adds,
+or marks shopping list items as done in text or machine-readable formats.
 
 ## Requirements
 
@@ -176,6 +176,43 @@ bring items add Groceries Mleko --spec "2 liters" --format json
 
 Added item output fields are `listUuid`, `listName`, `name`, `originalName`, and `specification`.
 
+### `bring items done LIST NAME`
+
+Marks one item in a Bring shopping list as done, moving it from the purchase section to the recent
+items section. `LIST` can be either a list UUID or an exact list name. By default, `NAME` is matched
+case-insensitively against Bring translations for the current system locale before sending the item
+name to Bring. If no translation exists, the raw name is sent with the casing passed on the command
+line.
+
+```sh
+bring items done list-1 mleko
+bring items done groceries Milk --no-translate
+```
+
+Default text output:
+
+```text
+Marked mleko as done in Groceries (list-1); matched as: Milk
+```
+
+Supported flags:
+
+- `--email <value>`: Bring account email. Defaults to `BRING_EMAIL`.
+- `--password <value>`: Bring account password. Defaults to `BRING_PASSWORD`.
+- `--format text|json|csv|tsv`: Output format. Defaults to `text`.
+- `--locale <value>`: Translation locale. Defaults to the current system locale.
+- `--no-translate`: Send the raw item name without loading translations.
+
+Examples:
+
+```sh
+bring items done groceries mleko --locale pl-PL
+bring items done list-1 Milk --no-translate
+bring items done Groceries Mleko --format json
+```
+
+Done item output fields are `listUuid`, `listName`, `name`, and `originalName`.
+
 ## Output Formats
 
 Bring commands that print structured data support the same output formats:
@@ -194,6 +231,7 @@ bring help
 bring help lists
 bring help items
 bring help items add
+bring help items done
 ```
 
 oclif also provides framework-level commands such as autocomplete and plugin management. They are
