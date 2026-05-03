@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/croogie/bring-shopping-cli/compare/v1.0.1...v1.1.0) (2026-05-03)
+
+### Features
+
+- `items done` command added ([#3](https://github.com/croogie/bring-shopping-cli/issues/3)) ([8f4b997](https://github.com/croogie/bring-shopping-cli/commit/8f4b99709cd32bdb8d2277cdfd80762e5b2afe61))
+
 ## [1.0.1](https://github.com/croogie/bring-shopping-cli/compare/v1.0.0...v1.0.1) (2026-05-02)
 
 ### Bug Fixes

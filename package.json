@@ -1,7 +1,7 @@
 {
   "name": "bring-shopping-cli",
   "description": "Bring Shopping CLI",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Michał Świtoń",
   "bin": {
     "bring": "bin/run.js"
